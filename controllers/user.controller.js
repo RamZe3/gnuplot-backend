@@ -3,8 +3,8 @@ const UserService = require('../services/user.service')
 const User = require("../models/User");
 class UserController{
     async createUser(req, res){
-        const {login, password} = req.body
-        const user = new User(login, password)
+        const {login, email, password} = req.body
+        const user = new User(login, email, password)
         const newPerson = await UserService.createUser(user)
         res.json(newPerson)
     }
@@ -20,9 +20,15 @@ class UserController{
         res.json(user)
     }
 
+    async getUserByLoginAndPass(req, res){
+        const {login, password} = req.query
+        const user = await UserService.getUserByLoginAndPass(login, password)
+        res.json(user)
+    }
+
     async updateUser(req, res){
-        const {id, login, password} = req.body
-        const user = new User(login, password, id)
+        const {id, login, email, password} = req.body
+        const user = new User(login, email, password, id)
         const uUser = await UserService.updateUser(user)
         res.json(uUser)
     }
