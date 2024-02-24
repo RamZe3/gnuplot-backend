@@ -16,19 +16,30 @@ create TABLE templates
     y_range_r INTEGER,
     x_tics    INTEGER,
     y_tics    INTEGER,
-    func      VARCHAR(255)[],
+    func      VARCHAR(255),
     grid      boolean,
+    x_label   VARCHAR(255),
+    y_label   VARCHAR(255),
+    width     INTEGER,
+    height    INTEGER,
     p_script  VARCHAR(255),
-    user_id   INTEGER,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    user_id   INTEGER ALLOW NULL,
+    creation_date timestamp,
+
+    invite_str VARCHAR(255)
 );
 
-{
-    "title": "TestNew",
-    "x_range_l": -15,
-    "x_range_r": 15,
-    "y_range_l": -75,
-    "y_range_r": 75,
-    "func": ["tan(pi * x)", "cos(x)"],
-    "user_id": 3
-}
+"create TABLE template_themes
+(
+    id        SERIAL PRIMARY KEY,
+    name    VARCHAR(255),    
+    by_invitation boolean,
+    invitation_string VARCHAR(255),
+);"
+
+DELETE
+FROM public.templates
+DELETE
+FROM public.users
+DELETE
+FROM public.template_themes
