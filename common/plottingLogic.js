@@ -3,18 +3,36 @@ var gnuplot = require('gnuplot');
 const moment = require('moment');
 const path = require('path')
 const {set} = require("express/lib/application");
+const Template = require('../models/Template');
+const writeDataOnFile = require("../common/FileDataLogic");
+
+function plotType2D(data){
+    const words1 = data.split('\n');
+    const words = words1[0].split(' ');
+    if(words.length > 2){
+       return false
+    }
+    else{
+      return true
+    }
+  }
 
 async function gnuplotting(template){
+    
+    var data = fs.createReadStream('common/data.dat')
+    writeDataOnFile('2 2 3\n3 3 2\n4 4 5')
+    console.log('file ' + plotType2D('2 2 2\n3 3\n4 4'))
 
     if(template.p_script !== ''){
         console.log(template.p_script + " script")
         let now = moment().format('YYYY_MM_DD_hh_mm_ss');
         await gnuplot()
-            //.set('terminal png size ' + template.width + ',' + template.height + ' font \"arial,12.0\"',)
             .set('terminal png size 600,480 font \"arial,12.0\"')
             .set("style data histograms\n" + template.p_script)
             .pipe(fs.createWriteStream( './plot/' + now + '.png'));
         let path1 = path.resolve('./plot/' + now + '.png')
+
+        console.log(template.grid + "grid")
 
         return "http://localhost:8080/plot/" + now + '.png'
     }
@@ -27,14 +45,27 @@ async function gnuplotting(template){
     //(template.x_label !== null) ? gnuplot().set('xlabel  \'$1\'', [template.x_label]) : "";
     //(template.y_label !== null) ? gnuplot().set('ylabel \'$1\'', [template.y_label]) : "";
 
-    console.log(template.func)
+    console.log(template.grid + " grid12")
+    console.log(template.grid !== 'true')
+    if (template.grid){
+        //template.grid = ''
+        console.log(typeof template.grid)
+    }
+    else{
+        console.log('не успех')
+    }
     let func = template.func
     //let func = ''
     //template.func.forEach(e => func += e + ', ' )
     //func = func.slice(0, -2)
 
     console.log(template.width + " " + template.height + "mesto")
+    //gnuplot().pipe(fs.createReadStream(data));
+    //await data.pipe(gnuplot().pipe(fs.createWriteStream( './plot/' + now + '.png')));
 
+    //let path12 = path.resolve('./plot/' + now + '.png')
+    
+    //return "http://localhost:8080/plot/" + now + '.png'
     await gnuplot()
         .set('terminal png size ' + template.width + ',' + template.height + ' font \"arial,12.0\"',)
         .set("style data histograms")
@@ -46,16 +77,16 @@ async function gnuplotting(template){
         //.set(template.grid ? "grid" : "asd")
         .set('xtics  \'' + template.x_tics + '\'')
         .set('ytics  \'' + template.y_tics + '\'')
-        //.set("title \"TEST\"")
-        //.set('zeroaxis')
-        //.plot(func, {end: true})
-        //.set("xtics 1")
-        //.set("ytics 1")
         .set("zeroaxis")
-        .set((template.grid === true) ? "grid" : "")
+        .set((template.grid) ? "grid" : "")
+        .unset((template.grid !== 'true') ? "grid" : "")
+        
         //.set('label 3 center')
-        .plot(func, {end: true})
+        //.splot('\'common/data.dat\'', {end: true})
+        .plot('\'common/data.dat\'', {end: true})
+        //.plot(func, {end: true})
         .pipe(fs.createWriteStream( './plot/' + now + '.png'));
+
 
     let path1 = path.resolve('./plot/' + now + '.png')
 
