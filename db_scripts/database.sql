@@ -26,7 +26,20 @@ create TABLE templates
     user_id   INTEGER ALLOW NULL,
     creation_date timestamp,
 
-    invite_str VARCHAR(255)
+    invite_str VARCHAR(255),
+
+    func3d      VARCHAR(255),
+    z_range_l INTEGER,
+    z_range_r INTEGER,
+    z_label   VARCHAR(255),
+    zeroaxis      boolean,
+    color   VARCHAR(255),
+    wigth   VARCHAR(255),
+    points_type VARCHAR(255),
+    plot_type VARCHAR(255),
+    border boolean,
+    z_tics    INTEGER,
+    file_data VARCHAR(10000),
 );
 
 "create TABLE template_themes

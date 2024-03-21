@@ -6,9 +6,12 @@ const newGuid = require("../common/GuidLogic");
 class TemplateService{
     async createTemplate(template){
         console.log("create")
+        console.log(template.file_data)
         const newTemplate = await db.query('INSERT INTO templates ' +
-            '(title, x_range_l, x_range_r, y_range_l, y_range_r, x_tics, y_tics, func, grid, x_label, y_label, width, height, p_script, user_id, creation_date, invite_str) ' +
-            'values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, CURRENT_TIMESTAMP, $16) RETURNING *',
+            '(title, x_range_l, x_range_r, y_range_l, y_range_r, x_tics, y_tics, func, grid, x_label, y_label, width, height, p_script, user_id, creation_date, invite_str, ' +
+                'func3d, z_range_l, z_range_r, z_label, zeroaxis, color, wigth, points_type, plot_type, border, z_tics, file_data) ' +
+            'values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, CURRENT_TIMESTAMP, $16,' +
+                '$17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) RETURNING *',
             [template.title,
                 template.x_range_l, template.x_range_r, template.y_range_l, template.y_range_r,
                 template.x_tics, template.y_tics,
@@ -18,12 +21,27 @@ class TemplateService{
                 template.width, template.height,
                 template.p_script,
                 template.user_id,
-                newGuid()])
+                newGuid(),
+
+                template.func3d,
+                template.z_range_l,
+                template.z_range_r,
+                template.z_label,
+                template.zeroaxis,
+                template.color,
+                template.wigth,
+                template.points_type,
+                template.plot_type,
+                template.border,
+                template.z_tics,
+                template.file_data,
+                ])
         return newTemplate.rows[0]
     }
 
     async plotTemplate(template){
         console.log("plot")
+        //console.log(template.file_data)
         let href = await gnuplotting(template)
         return href
     }
@@ -70,8 +88,10 @@ class TemplateService{
         console.log("Ошибки нет")
 
         const newTemplate = await db.query('INSERT INTO templates ' +
-            '(title, x_range_l, x_range_r, y_range_l, y_range_r, x_tics, y_tics, func, grid, x_label, y_label, width, height, p_script, user_id, creation_date, invite_str) ' +
-            'values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, CURRENT_TIMESTAMP, $16) RETURNING *',
+        '(title, x_range_l, x_range_r, y_range_l, y_range_r, x_tics, y_tics, func, grid, x_label, y_label, width, height, p_script, user_id, creation_date, invite_str, ' +
+        'func3d, z_range_l, z_range_r, z_label, zeroaxis, color, wigth, points_type, plot_type, border, z_tics, file_data) ' +
+    'values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, CURRENT_TIMESTAMP, $16,' +
+        '$17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) RETURNING *',
             [current_template.title,
                 current_template.x_range_l, current_template.x_range_r, current_template.y_range_l, current_template.y_range_r,
                 current_template.x_tics, current_template.y_tics,
@@ -81,7 +101,21 @@ class TemplateService{
                 current_template.width, current_template.height,
                 current_template.p_script,
                 user_id,
-                newGuid()])
+                newGuid(),
+                
+                current_template.func3d,
+                current_template.z_range_l,
+                current_template.z_range_r,
+                current_template.z_label,
+                current_template.zeroaxis,
+                current_template.color,
+                current_template.wigth,
+                current_template.points_type,
+                current_template.plot_type,
+                current_template.border,
+                current_template.z_tics,
+                current_template.file_data,
+            ])
             return newTemplate.rows[0]
     }
 
